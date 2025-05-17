@@ -1,0 +1,5 @@
+boto3
+numpy
+scipy
+ffmpeg==1.4
+pydub==0.25.1
