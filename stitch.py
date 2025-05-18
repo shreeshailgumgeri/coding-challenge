@@ -55,6 +55,7 @@ class Repo(object):
                 print(f'returning audio segment for {path}')
                 yield segment
         print('Exiting make_segments')
+        
 class BucketRepo(Repo):
     def __init__(self, audios, output, log=logging):
         print(f'initializing BucketRepo with S3 bucket {audios} and output key {output}')
@@ -64,11 +65,26 @@ class BucketRepo(Repo):
 
         print('Loading files from S3 bucket...')
         self.__files = [f for f in self.load_files(self.bucket, log=log)]
+        # s3 = b3.client('s3')
+        # response = s3.list_objects_v2(Bucket=self.bucket, Prefix="")
+        # list_files = [obj['Key'] for obj in response['Contents']]
+        # if 'Contents' in response:
+        #     files = list_files
+        #     print("Files in bucket:")
+        #     for f in files:
+        #         print(f)
+        # else:
+        #     return []
         print(f'found {len(self.__files)} audio files in S3 bucket {audios}')
         super().__init__(audios=audios, output=output, files=self.__files, log=log)
 
     def load_files(self, bucket, log=logging):
         print(f'Entering load_files for bucket: {bucket}')
+        print('Files in bucket:BEFORE')
+        files = self.s3.list_objects_v2(Bucket=self.bucket, Prefix="")
+        print('Files in bucket:')
+        for f in files.get('Contents', []):
+            print(f)    
         paginator = self.s3.get_paginator('list_objects_v2')
         for page in paginator.paginate(Bucket=bucket):
             for obj in page.get('Contents', []):
@@ -166,7 +182,7 @@ def lmbd_options(event,log=logging):
 # this is our main logic
 def main(message,repo,log=logging):
     print('Entering main with message:',message)    
-    print(f'Entering main with message: {message}')
+    print(f'Entering main with repo: {repo}')
     files=repo.files()
     print(f'found {len(files)} files to stitch')    
     print(f'will search {len(files)} to determine if message can be stitched')
@@ -208,17 +224,8 @@ if __name__=='__main__':
     logging.getLogger().setLevel(DEBUG_LEVEL)
     log = logging.getLogger(LOGGER_NAME)
     print('Starting script')    
-    print('Script started')
     ops=cmd_options(log=log)
     print(f'Command line options: {ops}')   
-    print(f'Command line options: {ops}')
     # main(message=ops.message,repo=LocalRepo(audios=ops.audios,output=ops.output, log=log),log=log)
-    main(message=ops.message,repo=BucketRepo(audios=ops.audios,output=ops.output, log=log),log=log)
+    lambda_handler(message=ops.message,repo=BucketRepo(audios=ops.audios,output=ops.output, log=log),log=log)
     print('Script finished')    
-    print('Script finished')
-
-
-git remote add origin https://github.com/{your_github_username}/coding_challenge.git
-git add .
-git commit -m "Initial commit"
-git push -u origin master
