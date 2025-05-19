@@ -56,69 +56,6 @@ class Repo(object):
                 yield segment
         print('Exiting make_segments')
         
-class BucketRepo(Repo):
-    def __init__(self, audios, output, log=logging):
-        print(f'initializing BucketRepo with S3 bucket {audios} and output key {output}')
-        self.s3 = b3.client('s3')
-        self.bucket = audios  # 'audios' is the S3 bucket name
-        self.output_key = output  # S3 key for output file
-
-        print('Loading files from S3 bucket...')
-        self.__files = [f for f in self.load_files(self.bucket, log=log)]
-        # s3 = b3.client('s3')
-        # response = s3.list_objects_v2(Bucket=self.bucket, Prefix="")
-        # list_files = [obj['Key'] for obj in response['Contents']]
-        # if 'Contents' in response:
-        #     files = list_files
-        #     print("Files in bucket:")
-        #     for f in files:
-        #         print(f)
-        # else:
-        #     return []
-        print(f'found {len(self.__files)} audio files in S3 bucket {audios}')
-        super().__init__(audios=audios, output=output, files=self.__files, log=log)
-
-    def load_files(self, bucket, log=logging):
-        print(f'Entering load_files for bucket: {bucket}')
-        print('Files in bucket:BEFORE')
-        files = self.s3.list_objects_v2(Bucket=self.bucket, Prefix="")
-        print('Files in bucket:')
-        for f in files.get('Contents', []):
-            print(f)    
-        paginator = self.s3.get_paginator('list_objects_v2')
-        for page in paginator.paginate(Bucket=bucket):
-            for obj in page.get('Contents', []):
-                key = obj['Key']
-                fname, fext = os.path.splitext(os.path.basename(key))
-                print(f'Checking file {key} with extension {fext}')
-                if fext.lower() in ALLOWED_AUDIO_FILE_EXTENSIONS:
-                    print(f'File {key} is allowed, downloading...')
-                    file_obj = self.s3.get_object(Bucket=bucket, Key=key)
-                    data = file_obj['Body'].read()
-                    fhash = get_hash(data)
-                    print(f'File {key} hash: {fhash}')
-                    yield FileInfo(bucket, fname, fext, key, fhash)
-                else:
-                    print(f'rejecting {key} since {fext} is not allowed')
-        print('Exiting load_files')
-
-    def read(self, path, log=logging):
-        print(f'reading S3 object {path} from bucket {self.bucket}')
-        obj = self.s3.get_object(Bucket=self.bucket, Key=path)
-        import io
-        print(f'Successfully read S3 object {path}')
-        return io.BytesIO(obj['Body'].read())
-
-    def write(self, stitched, log=logging):
-        print(f'writing stitched audio to S3 bucket {self.bucket} with key {self.output_key}')
-        import io
-        buf = io.BytesIO()
-        stitched.export(buf, format="mp3")
-        buf.seek(0)
-        self.s3.put_object(Bucket=self.bucket, Key=self.output_key, Body=buf.getvalue())
-        print('Successfully wrote stitched audio to S3')
-        return True
-
 class LocalRepo(Repo):
     def __init__(self, audios, output, log=logging):
         print(f'initializing local repo')
@@ -206,18 +143,6 @@ def main(message,repo,log=logging):
     print('Exiting main')
     return True
 
-# this is our lambda context handler
-def lambda_handler(event,context):
-    logging.basicConfig()
-    logging.getLogger().setLevel(DEBUG_LEVEL)
-    log = logging.getLogger(LOGGER_NAME)
-    print('Lambda handler started')
-    ops=lmbd_options(event,log=log)
-    print(f'Lambda options: {ops}')
-    result = main(message=ops.message,repo=BucketRepo(audios=ops.audios,output=ops.output, log=log),log=log)
-    print('Lambda handler finished')
-    return {"statusCode": 200, "body": result }
-
 # this is our local context handler
 if __name__=='__main__':
     logging.basicConfig()
@@ -226,6 +151,6 @@ if __name__=='__main__':
     print('Starting script')    
     ops=cmd_options(log=log)
     print(f'Command line options: {ops}')   
-    # main(message=ops.message,repo=LocalRepo(audios=ops.audios,output=ops.output, log=log),log=log)
-    lambda_handler(message=ops.message,repo=BucketRepo(audios=ops.audios,output=ops.output, log=log),log=log)
+    main(message=ops.message,repo=LocalRepo(audios=ops.audios,output=ops.output, log=log),log=log)
+    # lambda_handler(message=ops.message,repo=BucketRepo(audios=ops.audios,output=ops.output, log=log),log=log)
     print('Script finished')    
