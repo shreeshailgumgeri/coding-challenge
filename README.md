@@ -51,21 +51,6 @@ audio file contents (extra bonus points for this).
 
 ✅ Your final task, if you choose to accept it, is to make the lambda publicly accessible through an API endpoint.  PxD staff should be able to call it using a curl command.  Extra points for making this API and the lambda calls secure.
 
-API Endpoint : https://alnsxs4duwimivhdmxxc5ic6gu0jnczo.lambda-url.ap-south-1.on.aws/
-
-Sample Output 
-{
-  "success": true,
-  "message": "Stitched audio retrieved from cache!",
-  "audio_files": [
-    "hello.wav",
-    "shreeshail.wav"
-  ],
-  "output_file": "cache/87839e88254723e71ec06db5a8bc944b343d9cb52dceb1189099284ce7327875.mp3",
-  "public_url": "https://pxd-output.s3.amazonaws.com/cache/e71ec06db<TRUNCATED>1189099284ce7327875.mp3?  <--- you can access the stiched audio file and its secure presigned url X-Amz-Algorithm=AWS4-HMAC-SHA256&",
-  "cached": true
-}
-
 Additional bonus points and tasks:
 
 ✅ 1) Add functionality to cache already stitched messages.
@@ -74,6 +59,39 @@ Additional bonus points and tasks:
 
 //TODO 3) EXTRA SUPER BONUS: Make all your infrastructure and code deployable to Dev/Test/Stage/Prod environments with appropriate security AND a test suite which tests functionality (unit tests, integration tests, functional tests) before and after the deployment (as appropriate)
 
+
+## API Endpoint
+
+**URL:**  
+`https://alnsxs4duwimivhdmxxc5ic6gu0jnczo.lambda-url.ap-south-1.on.aws/`
+
+---
+
+## Sample Response
+
+```json
+{
+  "success": true,
+  "message": "Stitched audio retrieved from cache!",
+  "audio_files": [
+    "hello.wav",
+    "shreeshail.wav"
+  ],
+  "output_file": "cache/87839e88254723e71ec06db5a8bc944b343d9cb52dceb1189099284ce7327875.mp3",
+  "public_url": "https://pxd-output.s3.amazonaws.com/cache/e71ec06db1189099284ce7327875.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&...",
+  "cached": true
+}
+```
+
+- **success**: Indicates if the operation was successful.
+- **message**: Describes the result (e.g., whether the stitched audio was retrieved from cache).
+- **audio_files**: List of audio file names that were stitched.
+- **output_file**: The path to the stitched audio file within the output S3 bucket.
+- **public_url**: A secure, time-limited (presigned) URL to download or access the stitched audio file.
+- **cached**: Boolean indicating whether the file was retrieved from cache (`true`) or newly generated (`false`).
+
+**Note:**  
+You can use the `public_url` to securely access and download the stitched audio file.
 
 
 Architecture Diagram :
@@ -112,7 +130,7 @@ Architecture Diagram :
 - Deployed/tested via CI/CD pipelines.
 
 ---
-## Example Project Structure
+## Project Structure
 
 ```plaintext
 .
