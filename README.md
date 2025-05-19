@@ -75,6 +75,43 @@ Additional bonus points and tasks:
 //TODO 3) EXTRA SUPER BONUS: Make all your infrastructure and code deployable to Dev/Test/Stage/Prod environments with appropriate security AND a test suite which tests functionality (unit tests, integration tests, functional tests) before and after the deployment (as appropriate)
 
 
+
+Architecture Diagram :
+
+- ![Diagram](architecture.png)
+
+- [Excalidraw](https://excalidraw.com/#json=bb6bLCWPNt7ZJU9Ntih-A,v4vVDNsrykl0aNlGH4YLxg)
+---
+
+## Flow
+
+1. **Client** sends a request to the **API Gateway** (POST `/stitch` with audio file keys to stitch).
+2. **API Gateway** triggers the **Lambda function**.
+3. **Lambda** checks if a stitched version for the requested combination exists in the **Output S3 Bucket** under the `cache/` prefix.
+    - If cached, returns the URL to the cached file.
+    - If not, downloads audio parts from the **Input S3 Bucket**, stitches them, uploads the result to the cache area of the **Output S3 Bucket**, and returns the new URL.
+4. **S3 Lifecycle rules** automatically remove old cache files after a set period.
+
+---
+
+## Key AWS Resources
+
+- **API Gateway**: REST API entry point.
+- **Lambda**: Runs the stitching, cache check, and S3 interaction logic.
+- **Input S3 Bucket**: Holds user-uploaded audio files.
+- **Output S3 Bucket**: Holds stitched and cached audio files.
+- **IAM Roles**: Secure, least-privilege access for Lambda to S3.
+
+---
+
+## Security & Operations
+
+- Buckets are private by default.
+- IAM roles defined per environment.
+- S3 cache uses lifecycle expiration.
+- Deployed/tested via CI/CD pipelines.
+
+---
 ## Example Project Structure
 
 ```plaintext
@@ -96,6 +133,8 @@ Additional bonus points and tasks:
     └── workflows/
         └── ci.yml
 ```
+
+
 
 ---
 
