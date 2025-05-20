@@ -103,6 +103,8 @@ resource "aws_iam_role_policy_attachment" "lambda_attach" {
 
 resource "aws_lambda_function" "stitch" {
   function_name = "audio-stitcher-${var.stage}"
+  s3_bucket     = "pxd-ffmpeg-layer"
+  s3_key        = "ffmpeg-layer.zip"
   handler       = "stitch.lambda_handler"
   runtime       = "python3.11"
   role          = aws_iam_role.lambda_exec.arn
