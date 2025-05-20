@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "stage" {
   description = "Deployment environment (dev, test, stage, prod, etc.)"
   type        = string
-  default     = "dev"
+  default     = "dev-v1"
 }
 
 variable "input_bucket_name" {
