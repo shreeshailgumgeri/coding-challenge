@@ -54,6 +54,11 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: List files
+        run: ls -al
+      - name: List infra_automation directory
+        run: ls -al infra_automation
+        
       - name: Terraform Init
         working-directory: infra_automation
         run: terraform init
