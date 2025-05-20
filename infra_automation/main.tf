@@ -11,8 +11,8 @@ terraform {
     bucket         = "pxd-terraform-state-dev"    # Use your dedicated state bucket name
     key            = "infra_automation/terraform.tfstate" # Path in the bucket
     region         = "ap-south-1"                 # Your AWS region
-    dynamodb_table = "terraform-locks"            # Optional, for state locking
     encrypt        = true                         # Encrypt state at rest
+    lock_table     = "terraform-locks"            # Optional, for state locking
   }
 }
 
