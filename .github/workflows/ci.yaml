@@ -110,7 +110,7 @@ jobs:
         run: |
           set -ex
           aws lambda update-function-code \
-            --function-name audio-stitcher-dev \
+            --function-name audio-stitcher-dev-v1 \
             --s3-bucket pxd-ffmpeg-layer \
             --s3-key ffmpeg-layer.zip \
             --region ap-south-1
