@@ -18,11 +18,19 @@ resource "aws_s3_bucket" "input" {
 
 resource "aws_s3_bucket" "output" {
   bucket = var.output_bucket_name
+}
 
-  lifecycle_rule {
-    id      = "expire_cache"
-    enabled = true
-    prefix  = "cache/"
+resource "aws_s3_bucket_lifecycle_configuration" "output_lifecycle" {
+  bucket = aws_s3_bucket.output.id
+
+  rule {
+    id     = "expire_cache"
+    status = "Enabled"
+
+    filter {
+      prefix = "cache/"
+    }
+
     expiration {
       days = 7
     }

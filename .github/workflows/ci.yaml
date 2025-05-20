@@ -55,6 +55,9 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         working-directory: infra_automation
         run: terraform init
 
@@ -67,6 +70,9 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         working-directory: infra_automation
         run: terraform plan -var-file=dev.tfvars
 
