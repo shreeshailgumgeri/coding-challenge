@@ -1,0 +1,5 @@
+aws_region         = "ap-south-1"
+stage              = "dev"
+input_bucket_name  = "pxd-audios-dev"
+output_bucket_name = "pxd-output-dev"
+lambda_package     = "build/audio_stitcher.zip"
