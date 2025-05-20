@@ -86,20 +86,20 @@ jobs:
         working-directory: infra_automation
         run: terraform init
 
-      - name: Terraform Apply
-        working-directory: infra_automation
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: terraform apply -auto-approve -var-file=dev.tfvars
+      # - name: Terraform Apply
+      #   working-directory: infra_automation
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #   run: terraform apply -auto-approve -var-file=dev.tfvars
 
-      - name: Deploy Lambda function code
-        working-directory: infra_automation
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          aws lambda update-function-code \
-            --function-name audio-stitcher-dev \
-            --zip-file fileb://build/audio_stitcher.zip \
-            --region ap-south-1
+      # - name: Deploy Lambda function code
+      #   working-directory: infra_automation
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #   run: |
+      #     aws lambda update-function-code \
+      #       --function-name audio-stitcher-dev \
+      #       --zip-file fileb://build/audio_stitcher.zip \
+      #       --region ap-south-1
