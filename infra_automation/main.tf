@@ -12,7 +12,7 @@ terraform {
     key            = "infra_automation/terraform.tfstate" # Path in the bucket
     region         = "ap-south-1"                 # Your AWS region
     encrypt        = true                         # Encrypt state at rest
-    lock_table     = "terraform-locks"            # Optional, for state locking
+    dynamodb_table = "terraform-locks" 
   }
 }
 
