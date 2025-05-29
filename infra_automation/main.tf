@@ -120,6 +120,19 @@ resource "aws_lambda_function" "stitch" {
   timeout = 60
 }
 
+resource "aws_lambda_permission" "function_url" {
+  statement_id  = "AllowPublicFunctionUrlInvoke"
+  action        = "lambda:InvokeFunctionUrl"
+  function_name = aws_lambda_function.stitch.function_name
+  principal     = "*"
+  function_url_auth_type = "NONE"
+}
+
+output "lambda_function_url" {
+  value = aws_lambda_function_url.stitch_url.function_url
+}
+
+
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
