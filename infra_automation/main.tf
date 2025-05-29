@@ -121,10 +121,10 @@ resource "aws_lambda_function" "stitch" {
 }
 
 resource "aws_lambda_permission" "function_url" {
-  statement_id  = "AllowPublicFunctionUrlInvoke"
-  action        = "lambda:InvokeFunctionUrl"
-  function_name = aws_lambda_function.stitch.function_name
-  principal     = "*"
+  statement_id           = "AllowPublicFunctionUrlInvoke"
+  action                 = "lambda:InvokeFunctionUrl"
+  function_name          = aws_lambda_function.stitch.function_name
+  principal              = "*"
   function_url_auth_type = "NONE"
 }
 
