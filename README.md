@@ -63,7 +63,7 @@ Additional bonus points and tasks:
 ## API Endpoint
 
 **URL:**  
-`https://alnsxs4duwimivhdmxxc5ic6gu0jnczo.lambda-url.ap-south-1.on.aws/`
+[API-Endpoint-Link](https://alnsxs4duwimivhdmxxc5ic6gu0jnczo.lambda-url.ap-south-1.on.aws/)
 
 ---
 
