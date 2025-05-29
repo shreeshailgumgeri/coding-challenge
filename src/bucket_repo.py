@@ -40,7 +40,8 @@ class BucketRepo:
             'get_object',
             Params={
                 'Bucket': self.bucket_output,
-                'Key': self.output_file
+                'Key': self.output_file,
+                'ResponseContentDisposition': 'attachment; filename="presigned_stiched_audio.mp3"'
             },
             ExpiresIn=expires_in
         )

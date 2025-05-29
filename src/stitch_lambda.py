@@ -46,11 +46,9 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "body": json.dumps({
-                "success": True,
                 "message": "Stitched audio retrieved from cache!",
                 "audio_files": audio_keys,
-                "output_file": cache_output_file,
-                "public_url": public_url,
+                "download_stiched_file_url": public_url,
                 "cached": True
             })
         }
@@ -71,11 +69,9 @@ def lambda_handler(event, context):
     return {
         "statusCode": 200,
         "body": json.dumps({
-            "success": True,
             "message": "Stitched audio uploaded to S3!",
             "audio_files": audio_keys,
-            "output_file": cache_output_file,
-            "public_url": public_url,
+            "download_stiched_file_url": public_url,
             "cached": False
         })
     }
