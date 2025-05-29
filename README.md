@@ -31,35 +31,6 @@ Once the input paramters are provided, it will generate a repository (in this ca
 will be used to list all of the files in the root audio file directory.  It will also be used to load the
 audio file contents and to save the stitched audio file.
 
-There is some additional complexity and helper functions.
-
-## Test
-
-As part of our interview process, we have a programming challenge. The goal is for you to become familiar with the technology we use and demonstrate your engineering proficiency.
-
-✅ Your first task is to add code to the BucketRepo class so that it works when called from an AWS lambda function.
-
-✅ The `lambda_handler` function, as the name implies, is the signature that should be used in the lambda.
-
-✅ You will need to add the lambda layers necessary to include the libraries specified in requirements.txt.
-✅ The lambda should return the success/failure of creating the stitched audio file, OR, the auctual stitched
-audio file contents (extra bonus points for this).
-
-✅ Once you have completed it the code, or during as you prefer, you should deploy the lambda to AWS, provide the proper permissions so that it can perform its work, and allow it to be accessible via a public API.
-
-//TODO You can write the necessary steps and actions required to do this, record yourself doing it, or if you would like extra points, use one of the various tools to deploy the lambda (e.g. terraform, zip file, etc.)
-
-✅ Your final task, if you choose to accept it, is to make the lambda publicly accessible through an API endpoint.  PxD staff should be able to call it using a curl command.  Extra points for making this API and the lambda calls secure.
-
-Additional bonus points and tasks:
-
-✅ 1) Add functionality to cache already stitched messages.
-
-✅ 2) Use software engineering best practices to document your work and prepare it for deployment in one or more environments.  Hint: change control, CI/CD, etc.
-
-//TODO 3) EXTRA SUPER BONUS: Make all your infrastructure and code deployable to Dev/Test/Stage/Prod environments with appropriate security AND a test suite which tests functionality (unit tests, integration tests, functional tests) before and after the deployment (as appropriate)
-
-
 ## API Endpoint
 
 **URL:**  
@@ -71,27 +42,22 @@ Additional bonus points and tasks:
 
 ```json
 {
-  "success": true,
   "message": "Stitched audio retrieved from cache!",
   "audio_files": [
     "hello.wav",
     "shreeshail.wav"
   ],
-  "output_file": "cache/87839e88254723e71ec06db5a8bc944b343d9cb52dceb1189099284ce7327875.mp3",
-  "public_url": "https://pxd-output.s3.amazonaws.com/cache/e71ec06db1189099284ce7327875.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&...",
+  "download_stiched_file_url": "https://pxd-output.s3.amazonaws.com/cache/e71ec06db1189099284ce7327875.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&...",
   "cached": true
 }
 ```
-
-- **success**: Indicates if the operation was successful.
 - **message**: Describes the result (e.g., whether the stitched audio was retrieved from cache).
 - **audio_files**: List of audio file names that were stitched.
-- **output_file**: The path to the stitched audio file within the output S3 bucket.
 - **public_url**: A secure, time-limited (presigned) URL to download or access the stitched audio file.
 - **cached**: Boolean indicating whether the file was retrieved from cache (`true`) or newly generated (`false`).
 
 **Note:**  
-You can use the `public_url` to securely access and download the stitched audio file.
+You can use the `download_stiched_file_url` to securely access and download the stitched audio file.
 
 
 Architecture Diagram :
@@ -124,7 +90,7 @@ Architecture Diagram :
 
 ## Security & Operations
 
-- Buckets are private by default.
+- S3 Buckets are private by default.
 - IAM roles defined per environment.
 - S3 cache uses lifecycle expiration.
 - Deployed/tested via CI/CD pipelines.
